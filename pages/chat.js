@@ -1,16 +1,19 @@
 import { Box, Text, TextField, Image, Button } from "@skynexui/components";
 import React from "react";
 import appConfig from "../config.json";
+import { fetchMessages } from "../utils/RequestHandler";
 
 export default function ChatPage() {
   const [message, setMessage] = React.useState("");
   const [messageList, setMessageList] = React.useState([]);
 
+  //console.log(fetchMessages());
+
   function handleNewMessage(newMessage) {
     const messageObj = {
       text: newMessage,
       from: "felipexlr50",
-      id: messageList.length + 1,
+      id: messageList.length.toString() + new Date().getTime().toString(),
     };
 
     setMessageList([messageObj, ...messageList]);
@@ -59,7 +62,7 @@ export default function ChatPage() {
             padding: "16px",
           }}
         >
-          <MessageList messages={messageList} />
+          <MessageList messages={messageList} setList={setMessageList} />
           <Box
             as="form"
             styleSheet={{
@@ -93,7 +96,6 @@ export default function ChatPage() {
             />
             <Button
               onClick={(event) => {
-                console.log("clique");
                 handleNewMessage(message);
               }}
               value="Enviar"
@@ -199,7 +201,25 @@ function MessageList(props) {
               >
                 {new Date().toLocaleDateString()}
               </Text>
+              <Button
+                label="X"
+                variant="tertiary"
+                onClick={() => {
+                  var filteredList = props.messages.filter(
+                    (item) => item.id !== message.id
+                  );
+                  props.setList(filteredList);
+                  console.log(filteredList);
+                }}
+                styleSheet={{
+                  width: "20px",
+                  height: "20px",
+                  marginLeft: "8px",
+                  borderRadius: "20%",
+                }}
+              />
             </Box>
+
             {message.text}
           </Text>
         );
